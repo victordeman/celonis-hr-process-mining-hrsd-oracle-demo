@@ -1,0 +1,14 @@
+-- 1. Compare Variants by Entity Type (EVU vs EIU)
+-- Use PU_COUNT to find variants in entities
+FILTER "HRSD_ORACLE_HARMONIZED_LOG"."Entity_Type" = 'EVU';
+VARIANT("HRSD_ORACLE_HARMONIZED_LOG"."Activity");
+
+FILTER "HRSD_ORACLE_HARMONIZED_LOG"."Entity_Type" = 'EIU';
+VARIANT("HRSD_ORACLE_HARMONIZED_LOG"."Activity");
+
+-- 2. Number of Variants per Entity
+PU_COUNT("HRSD_ORACLE_HARMONIZED_LOG"."Entity", VARIANT("HRSD_ORACLE_HARMONIZED_LOG"."Activity"))
+
+-- 3. Case ID with Variant Name for Drill-down
+"HRSD_ORACLE_HARMONIZED_LOG"."Case ID",
+VARIANT("HRSD_ORACLE_HARMONIZED_LOG"."Activity") AS "Process Variant"
