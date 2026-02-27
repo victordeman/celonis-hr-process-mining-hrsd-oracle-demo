@@ -1,0 +1,18 @@
+-- 1. Cases Meeting SLA by Priority
+-- Percentage of SLA compliant cases for each priority level
+AVG(CASE WHEN "HRSD_ORACLE_HARMONIZED_LOG"."SLA_Status" = 'SLA Compliant' THEN 100.0 ELSE 0.0 END)
+GROUP BY "HRSD_ORACLE_HARMONIZED_LOG"."Priority"
+
+-- 2. SLA Compliance Over Time (Months)
+AVG(CASE WHEN "HRSD_ORACLE_HARMONIZED_LOG"."SLA_Status" = 'SLA Compliant' THEN 100.0 ELSE 0.0 END)
+GROUP BY ROUND_MONTH("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp")
+
+-- 3. High Priority Cases with SLA Breach
+-- List Case IDs that are 'Critical' or 'High' priority and have breached SLA
+COUNT(DISTINCT CASE WHEN "HRSD_ORACLE_HARMONIZED_LOG"."Priority" IN ('Critical', 'High') 
+                   AND "HRSD_ORACLE_HARMONIZED_LOG"."SLA_Status" = 'SLA Breached' 
+                   THEN "HRSD_ORACLE_HARMONIZED_LOG"."Case ID" ELSE NULL END)
+
+-- 4. Trendline of SLA Breaches (%)
+AVG(CASE WHEN "HRSD_ORACLE_HARMONIZED_LOG"."SLA_Status" = 'SLA Breached' THEN 1.0 ELSE 0.0 END)
+GROUP BY ROUND_DAY("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp")
