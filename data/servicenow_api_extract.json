@@ -1,0 +1,20 @@
+{
+    "result": [
+        {
+            "number": "HRC-123456",
+            "short_description": "Employee Onboarding Issue",
+            "state": "In Progress",
+            "sys_created_on": "2024-02-26 10:00:00",
+            "assignment_group": "HR Core Support",
+            "assigned_to": "Klaus Miller"
+        },
+        {
+            "number": "HRC-123457",
+            "short_description": "Payroll Correction Request",
+            "state": "Resolved",
+            "sys_created_on": "2024-02-26 11:30:00",
+            "assignment_group": "Payroll German Entity",
+            "assigned_to": "Sabine Weber"
+        }
+    ]
+}
