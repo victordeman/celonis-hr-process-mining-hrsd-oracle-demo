@@ -1,0 +1,31 @@
+{
+  "name": "HR Process Mining (ServiceNow HRSD + Oracle HCM)",
+  "description": "Harmonized Data Model for HR Case Management and Employee Master Data",
+  "tables": [
+    {
+      "name": "HRSD_ORACLE_HARMONIZED_LOG",
+      "is_event_log": true,
+      "columns": [
+        {"name": "Case ID", "type": "STRING", "role": "CASE_ID"},
+        {"name": "Employee_ID", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Activity", "type": "STRING", "role": "ACTIVITY"},
+        {"name": "Timestamp", "type": "DATETIME", "role": "TIMESTAMP"},
+        {"name": "Resource", "type": "STRING", "role": "RESOURCE"},
+        {"name": "Department", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Entity", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Entity_Type", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Priority", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "SLA_Status", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Employee_Name", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Job_Role", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Location", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Hire_Date", "type": "DATETIME", "role": "CASE_ATTRIBUTE"},
+        {"name": "Gender", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Nationality", "type": "STRING", "role": "CASE_ATTRIBUTE"},
+        {"name": "Home_Entity", "type": "STRING", "role": "CASE_ATTRIBUTE"}
+      ]
+    }
+  ],
+  "relationships": [],
+  "foreign_keys": []
+}
