@@ -1,0 +1,19 @@
+-- 1. Cases with Rework Activities (Rework Loop)
+-- Find cases that have 'Rework Loop' in their process
+COUNT(DISTINCT CASE WHEN "HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Rework Loop' THEN "HRSD_ORACLE_HARMONIZED_LOG"."Case ID" ELSE NULL END)
+
+-- 2. Average Rework Count per Case
+-- Use PU_COUNT to count rework occurrences per Case ID
+AVG(PU_COUNT("HRSD_ORACLE_HARMONIZED_LOG"."Case ID", "HRSD_ORACLE_HARMONIZED_LOG"."Activity", "HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Rework Loop'))
+
+-- 3. Rework Rate (%)
+100.0 * COUNT(DISTINCT CASE WHEN "HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Rework Loop' THEN "HRSD_ORACLE_HARMONIZED_LOG"."Case ID" ELSE NULL END) / COUNT(DISTINCT "HRSD_ORACLE_HARMONIZED_LOG"."Case ID")
+
+-- 4. Cycle Time Impact of Rework
+-- Average throughput of cases with rework vs cases without rework
+AVG(CASE WHEN PU_COUNT("HRSD_ORACLE_HARMONIZED_LOG"."Case ID", "HRSD_ORACLE_HARMONIZED_LOG"."Activity", "HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Rework Loop') > 0 
+    THEN CALC_THROUGHPUT(FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Create HR Case') TO LAST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Close'), REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", DAYS))
+    ELSE NULL END) AS "Avg Throughput (Rework Cases)",
+AVG(CASE WHEN PU_COUNT("HRSD_ORACLE_HARMONIZED_LOG"."Case ID", "HRSD_ORACLE_HARMONIZED_LOG"."Activity", "HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Rework Loop') = 0 
+    THEN CALC_THROUGHPUT(FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Create HR Case') TO LAST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Close'), REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", DAYS))
+    ELSE NULL END) AS "Avg Throughput (No Rework Cases)"
