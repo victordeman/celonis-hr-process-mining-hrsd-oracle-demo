@@ -1,0 +1,25 @@
+-- 1. Idle Time in Manager Approval
+-- Time spent waiting for Manager Approval activity after Assign to Team
+AVG(CALC_THROUGHPUT(
+    FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Assign to Team') TO 
+    FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Manager Approval'), 
+    REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", HOURS)
+)) AS "Avg Wait Time for Manager Approval (Hours)"
+
+-- 2. Idle Time Between Rework Loop and HR Review
+AVG(CALC_THROUGHPUT(
+    FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Rework Loop') TO 
+    FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'HR Review'), 
+    REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", HOURS)
+)) AS "Avg Idle Time in Rework (Hours)"
+
+-- 3. Percentage of Idle Time vs Total Throughput
+-- Identify cases where idle time (waiting for approval) > 50% of total time
+100.0 * COUNT(DISTINCT CASE WHEN 
+    CALC_THROUGHPUT(FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Assign to Team') TO FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Manager Approval'), REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", DAYS)) > 
+    0.5 * CALC_THROUGHPUT(FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Create HR Case') TO LAST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Close'), REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", DAYS))
+    THEN "HRSD_ORACLE_HARMONIZED_LOG"."Case ID" ELSE NULL END) / COUNT(DISTINCT "HRSD_ORACLE_HARMONIZED_LOG"."Case ID")
+
+-- 4. Idle Time by Department
+AVG(CALC_THROUGHPUT(FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Assign to Team') TO FIRST_OCCURRENCE("HRSD_ORACLE_HARMONIZED_LOG"."Activity" = 'Manager Approval'), REMAP_TIMESTAMPS("HRSD_ORACLE_HARMONIZED_LOG"."Timestamp", DAYS)))
+GROUP BY "HRSD_ORACLE_HARMONIZED_LOG"."Department"
